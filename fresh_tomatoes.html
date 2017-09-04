@@ -1,10 +1,4 @@
-import webbrowser
-import os
-import re
 
-
-# Styles and scripting for the page
-main_page_head = '''
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,19 +36,6 @@ main_page_head = '''
         .movie-tile:hover {
             background-color: #EEE;
             cursor: pointer;
-        }
-        .navbar {
-            position: relative;
-            min-height: 70px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-        }
-        .navbar-brand {
-            float: left;
-            padding: 25px;
-            font-size: 18px;
-            line-height: 20px;
-            height: 20px;
         }
         .scale-media {
             padding-bottom: 56.25%;
@@ -96,11 +77,7 @@ main_page_head = '''
         });
     </script>
 </head>
-'''
 
-
-# The main page layout and title bar
-main_page_content = '''
   <body>
     <!-- Trailer Video Modal -->
     <div class="modal" id="trailer">
@@ -126,55 +103,37 @@ main_page_content = '''
       </div>
     </div>
     <div class="container">
-      {movie_tiles}
+      
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="loTIzXAS7v4" data-toggle="modal" data-target="#trailer">
+    <img src="https://images-na.ssl-images-amazon.com/images/M/MV5BMDIzODcyY2EtMmY2MC00ZWVlLTgwMzAtMjQwOWUyNmJjNTYyXkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1_UX182_CR0,0,182,268_AL_.jpg" width="220" height="342">
+    <h2>The Truman Show</h2>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="SUXWAEX2jlg" data-toggle="modal" data-target="#trailer">
+    <img src="https://resizing.flixster.com/ufkIoVy_j1tiHVh47VfcYcttPHY=/206x305/v1.bTsxMTM3MjQ0ODtqOzE3NTAxOzEyMDA7MTE5MTsxNTg4" width="220" height="342">
+    <h2>Fight Club</h2>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="imm6OR605UI" data-toggle="modal" data-target="#trailer">
+    <img src="https://images-na.ssl-images-amazon.com/images/M/MV5BYzVmYzVkMmUtOGRhMi00MTNmLThlMmUtZTljYjlkMjNkMjJkXkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1_UX182_CR0,0,182,268_AL_.jpg" width="220" height="342">
+    <h2>Ocean's Eleven</h2>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="V75dMMIW2B4" data-toggle="modal" data-target="#trailer">
+    <img src="https://images-na.ssl-images-amazon.com/images/M/MV5BN2EyZjM3NzUtNWUzMi00MTgxLWI0NTctMzY4M2VlOTdjZWRiXkEyXkFqcGdeQXVyNDUzOTQ5MjY@._V1_UX182_CR0,0,182,268_AL_.jpg" width="220" height="342">
+    <h2>Lord of the Rings</h2>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="Pqbz8yojxBY" data-toggle="modal" data-target="#trailer">
+    <img src="https://dg7kra6zb39sn.cloudfront.net/media/spotlight/page/poster-76790dda-ea18-40e9-9311-c16e27a13625.jpg" width="220" height="342">
+    <h2>Sideways</h2>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="rrRl2QQKkI8" data-toggle="modal" data-target="#trailer">
+    <img src="http://www.goldenglobes.com/sites/default/files/films/as_good_as_it_gets.jpg" width="220" height="342">
+    <h2>As Good as it Gets</h2>
+</div>
+
     </div>
   </body>
 </html>
-'''
-
-
-# A single movie entry html template
-movie_tile_content = '''
-<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="{trailer_youtube_id}" data-toggle="modal" data-target="#trailer">
-    <img src="{poster_image_url}" width="220" height="342">
-    <h2>{movie_title}</h2>
-</div>
-'''
-
-
-def create_movie_tiles_content(movies):
-    # The HTML content for this section of the page
-    content = ''
-    for movie in movies:
-        # Extract the youtube ID from the url
-        youtube_id_match = re.search(
-            r'(?<=v=)[^&#]+', movie.trailer_youtube_url)
-        youtube_id_match = youtube_id_match or re.search(
-            r'(?<=be/)[^&#]+', movie.trailer_youtube_url)
-        trailer_youtube_id = (youtube_id_match.group(0) if youtube_id_match
-                              else None)
-
-        # Append the tile for the movie with its content filled in
-        content += movie_tile_content.format(
-            movie_title=movie.title,
-            poster_image_url=movie.poster_image_url,
-            trailer_youtube_id=trailer_youtube_id
-        )
-    return content
-
-
-def open_movies_page(movies):
-    # Create or overwrite the output file
-    output_file = open('fresh_tomatoes.html', 'w')
-
-    # Replace the movie tiles placeholder generated content
-    rendered_content = main_page_content.format(
-        movie_tiles=create_movie_tiles_content(movies))
-
-    # Output the file
-    output_file.write(main_page_head + rendered_content)
-    output_file.close()
-
-    # open the output file in the browser (in a new tab, if possible)
-    url = os.path.abspath(output_file.name)
-    webbrowser.open('file://' + url, new=2)
